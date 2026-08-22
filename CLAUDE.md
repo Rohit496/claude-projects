@@ -15,6 +15,34 @@ This directory holds three unrelated projects that share no code, no build, and 
 One git repo at the root covering all three. No test suite and no linter anywhere — don't invent
 commands for them. Only `job-portal/` has a bundler.
 
+## Repository structure
+
+```
+.
+├── index.html, script.js, style.css   Future Me — the repo root *is* the app
+├── color-palette-explorer/
+│   ├── server.js                      Express 5; reads data/palette.json once at boot
+│   ├── data/palette.json              {name, hex} source of truth — restart to pick up edits
+│   ├── data/history.json              runtime click log; gitignored, safe to delete
+│   └── public/                        index.html, app.js, styles.css — served statically
+├── job-portal/
+│   ├── index.html                     Vite entry; inline pre-paint theme script
+│   ├── vite.config.js                 port 5173, strictPort
+│   ├── README.md                      routes, scoring weights, layout — read before editing
+│   └── src/
+│       ├── data/                      seed listings, company profiles + inline SVG logos, taxonomies
+│       ├── lib/                       fit engine, filter/sort pipeline, storage, formatting, hooks
+│       ├── store/AppStore.jsx         one context: all state, persisted to localStorage
+│       ├── components/                Header, JobCard, JobDetail, Dialog, FitMeter, Filters…
+│       ├── pages/                     one file per route
+│       └── styles/                    tokens → base → components → layout → job (import order)
+└── CLAUDE.md
+```
+
+`node_modules/`, `job-portal/dist/`, `.vscode/`, `.claude/settings.local.json`, `.sf/` (Salesforce
+CLI cache) and the explorer's `data/history.json` are gitignored. Everything else is tracked,
+including `job-portal/`'s setup-guide PDF.
+
 ## Commands
 
 ```bash
@@ -27,12 +55,105 @@ python3 -m http.server 8931                              # then http://localhost
 # Job Portal
 cd job-portal && npm install && npm run dev      # http://localhost:5173 (port is pinned)
 
-# Syntax check after editing (the only "test" available for the two vanilla apps)
+# Syntax check after editing — the only "test" the two vanilla apps have
 node --check script.js
+node --check color-palette-explorer/server.js color-palette-explorer/public/app.js
 
-# Job Portal has a real build, which is its type check of last resort
+# Job Portal — production build; the closest thing to a type check in this repo
 cd job-portal && npm run build
+cd job-portal && npm run preview                         # serve that build on :5173
 ```
+
+There is **no test runner, no linter and no formatter** in any of the three apps. Don't invent
+`npm test` or `npm run lint` — they do not exist. Verification is: run the app, click the flow,
+read the console. For the Job Portal, `npm run build` also has to pass.
+
+## Git conventions
+
+### Branching
+
+Branch off `main` for all new work. Keep branches short-lived, open a PR when ready, and delete
+the branch after merging.
+
+```
+feature/add-job-filter-sidebar         # New features
+fix/employer-route-redirect-loop       # Bug fixes
+docs/update-readme                     # Documentation only
+chore/upgrade-dependencies             # Maintenance, tooling
+refactor/simplify-auth-context         # Code refactoring
+style/mobile-job-card-spacing          # Visual/style changes
+```
+
+### Commit messages
+
+Follow **Conventional Commits**:
+
+```
+feat: add saved jobs count to navbar
+fix: correct role guard on employer routes
+docs: update README with localStorage keys
+chore: upgrade react-router to v7.8
+refactor: extract job card into reusable component
+style: fix spacing on mobile job list
+```
+
+- Present tense, lowercase, no trailing period
+- Subject line under 72 characters
+- Add a body for non-obvious changes — what changed and *why*
+- Keep the `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>` trailer on Claude-authored commits
+
+Commits predating this convention use a sentence-case subject with no type prefix; leave them be
+and use Conventional Commits from here on. Because the three apps share a repo but no code, keep a
+commit inside one app unless the change genuinely spans them (this file is the usual exception).
+
+### Pull requests
+
+- PR title follows the same Conventional Commits format as the subject line
+- Description carries a summary and a test plan
+- Base branch is `main`
+
+Commit or push only when asked, and branch before committing rather than adding to `main` directly.
+
+## Coding standards
+
+### Repo-wide
+
+The three apps share no code, but they do share these rules. Breaking one is a regression even
+when nothing visibly breaks:
+
+- **No native `alert` / `confirm` / `prompt`, anywhere.** Each app has its own in-page dialog
+  helper — `openDialog`/`closeDialog` in Future Me, `Dialog`/`ConfirmDialog` in the Job Portal.
+  Route new dialogs through them so focus trapping, Escape, `inert` and scroll locking come free.
+- **Components read design tokens, never colour literals.** Add a token before you add a hex.
+- **Everything interpolated into HTML must be escaped.** Future Me builds cards as `innerHTML`
+  strings and has `escapeHtml()` for exactly this; React escapes for you, so don't reach for
+  `dangerouslySetInnerHTML`.
+- **Treat `localStorage` as untrusted input.** It is user-editable and survives schema changes;
+  validate shape on read and fall back to defaults rather than throwing.
+- **Honour `prefers-reduced-motion: reduce`** in every new animation, in CSS and in JS timers.
+- **One `<h1>` per page**, labelled controls, visible focus rings, and text at WCAG AA contrast.
+- **Vanilla stays vanilla.** Future Me and the explorer have zero front-end dependencies and no
+  build step; don't introduce a framework, a bundler or a package into either.
+- Match the file you are editing — its comment density, naming and idiom — over any house style.
+  Comments explain *why*, especially where an invariant is easy to break by accident.
+
+### Job Portal (React)
+
+- **No TypeScript** — plain JSX throughout; do not add `.ts`/`.tsx` files.
+- **Functional components only** — no class components.
+- Keep components focused; extract reusable pieces into `src/components/`.
+- **React Context for shared state, no external state library.** One provider, `AppStore.jsx`.
+- Persist user data to `localStorage` under the versioned `jobportal.v1.*` keys via
+  `lib/storage.js` — never call `localStorage` directly from a component.
+- Mobile-first responsive CSS: base rules are the small-screen case, `min-width` media queries
+  layer on the larger ones.
+
+### Naming
+
+- Components: `PascalCase` (e.g. `JobCard.jsx`)
+- Variables and functions: `camelCase`
+- Constants: `UPPER_SNAKE_CASE` (e.g. `WEIGHTS`, `LEVEL_ORDER`, `SEED_JOBS`)
+- Files match the name they export (`JobCard.jsx` exports `JobCard`)
 
 ## Future Me (root)
 
@@ -101,24 +222,58 @@ at write time — the reference code and redaction are computed from `id` at ren
 
 ## Job Portal (`job-portal/`)
 
-Vite + React 19 + React Router 7. Front end only — **no API and no server**; the port is pinned
-to 5173 in `vite.config.js` because the setup guide tells people to open that URL. Read
+React 19 SPA on Vite 8 with React Router 7. Plain JSX, no TypeScript. Read
 `job-portal/README.md` first; it documents the routes, the scoring weights and the layout.
 
-- **The fit engine** (`src/lib/fit.js`) is the product. Every role scores out of 100 from four
-  weighted parts — skills 45, seniority 20, location 20, pay 15 — and `scoreFit` returns the
-  per-part breakdown alongside the number, because the UI renders that breakdown verbatim.
-  Change a weight in `WEIGHTS` and the detail panel, the profile stats and the hero demo all
-  follow. `LEVELS` in `data/taxonomy.js` is ordered junior → senior and the engine measures
-  distance along it, so keep it ordered if you add a rung.
-- **One store.** `store/AppStore.jsx` holds profile, saved, applications, posted jobs, recent
-  searches and theme, each persisted under a versioned `jobportal.v1.*` key. Side effects must
-  stay **outside** state updaters — React invokes updaters twice in development, and a
-  `pushToast` inside one announces every action twice.
-- **Storage is untrusted input.** `lib/storage.js:readJSON` falls back to defaults unless the
-  stored value both parses *and* matches the fallback's shape; a key holding `"a string"`
-  parses fine and then explodes on `.map()`. Objects are merged over the fallback so a pruned
-  object keeps every key.
+### Architecture
+
+**No backend, no API, no auth.** Every listing ships with the app and everything the user does
+stays in `localStorage`. There is no login, no user account and no role system — a visitor is
+simply a candidate with a profile, and "posting a job" writes to the same local store. Don't add
+route guards or an auth context without being asked; nothing is protected because nothing is
+private.
+
+**Styling is hand-written CSS with design tokens — there is no Tailwind, no CSS-in-JS and no CSS
+modules.** Five stylesheets import in a fixed order (`tokens → base → components → layout → job`),
+and cascade order is load-bearing: `tokens.css` defines the custom properties everything else
+reads, so a rule that needs to win goes later in the order, not to `!important`. The only
+`!important` in the app is the `prefers-reduced-motion` block in `base.css`, which has to override
+every animation unconditionally — keep it the only one. Small one-off positioning is done with a
+`style` prop; anything reusable becomes a class.
+
+**Icons and toasts are ours, not libraries.** `components/Icons.jsx` draws every glyph as inline
+SVG on a 24×24 grid, and `components/Toasts.jsx` is a local `aria-live` region. The app has no
+icon or notification dependency — keep it that way.
+
+### State
+
+**One context, not several.** `store/AppStore.jsx` is the single provider (`AppProvider` /
+`useApp`) holding profile, saved ids, applications, posted jobs, recent searches, theme and the
+toast queue. There is no Redux, Zustand or data-fetching layer, because there is nothing to fetch.
+
+- Every slice persists through `usePersistentState`, which writes on change under a versioned key:
+  `jobportal.v1.saved`, `.applications`, `.postedJobs`, `.profile`, `.recentSearches`, plus
+  `jobportal.theme`. Keys live in `lib/storage.js:KEYS` — never type a raw key or touch
+  `localStorage` from a component.
+- **Side effects must stay outside state updaters.** React invokes updaters twice in development,
+  so a `pushToast` inside one announces every action twice. Compute the next value from the
+  current state, call the setter, then fire the effect.
+- **Storage is untrusted input.** `readJSON` falls back to defaults unless the stored value both
+  parses *and* matches the fallback's shape; a key holding `"a string"` parses fine and then
+  explodes on `.map()`. Objects are merged over the fallback so a pruned object keeps every key.
+
+### The fit engine
+
+`src/lib/fit.js` is the product. Every role scores out of 100 from four weighted parts — skills
+45, seniority 20, location 20, pay 15 — and `scoreFit` returns the per-part breakdown alongside
+the number, because the UI renders that breakdown verbatim. Change a weight in `WEIGHTS` and the
+detail panel, the profile stats and the hero demo all follow. `LEVELS` in `data/taxonomy.js` is
+ordered junior → senior and the engine measures distance along it, so keep it ordered if you add
+a rung. `lib/filters.js` is the one place search, filters and sorting are applied, so every page
+narrows results identically.
+
+### Component rules
+
 - **Dialogs** go through `components/Dialog.jsx`: it traps Tab, closes on Escape, restores focus
   to the trigger and sets `inert` on every body child except the dialog and the toast region
   (inert would silence the toast's `aria-live`). There are no native `alert`/`confirm`/`prompt`
@@ -133,6 +288,8 @@ to 5173 in `vite.config.js` because the setup guide tells people to open that UR
   panel, where the board owns the `h1`. Each route sets its own tab title via
   `useDocumentTitle`; child effects run before the parent's, so a title map in `App` would
   overwrite whatever a dynamic route had set.
+- **Focus after validation** moves in an effect, not in the submit handler — `aria-invalid`
+  doesn't exist in the DOM until React commits the state change.
 - **A city search also returns remote roles** (you can do them from that city). The result count
   splits the two — drop that note and the extra rows read as a broken filter.
 - Informational text must not use `--ink-faint`; it fails WCAG AA. That token is for
@@ -140,11 +297,15 @@ to 5173 in `vite.config.js` because the setup guide tells people to open that UR
 
 ## Theming (all three apps, same pattern, separate state)
 
-`[data-theme="dark"|"light"]` on `<html>` selects a block of CSS custom properties; components only ever
-read tokens (`--bg`, `--text`, `--accent`, …). Keys differ: `futureme.theme`, `cpe.theme`,
-`jobportal.theme`. All three set the attribute in an inline `<head>` script before first paint to
-avoid a theme flash, so `initTheme()` in Future Me — and `AppProvider` in the Job Portal — only
-read back what that script already decided and wire the toggle.
+`[data-theme="dark"|"light"]` on `<html>` selects a block of CSS custom properties, and components
+only ever read tokens — never a colour literal. All three set the attribute in an inline `<head>`
+script before first paint to avoid a theme flash, so `initTheme()` in Future Me — and `AppProvider`
+in the Job Portal — only read back what that script already decided and wire the toggle.
+
+The pattern is shared; the vocabularies are not. Future Me and the explorer use `--bg` / `--text` /
+`--surface`; the Job Portal uses `--paper` / `--ink` / `--surface` with numbered ramps
+(`--ink-2`, `--ink-3`, `--surface-2`). Storage keys differ too: `futureme.theme`, `cpe.theme`,
+`jobportal.theme`. Don't copy a token name from one app into another and assume it resolves.
 
 Future Me's design language tracks the current mainstream product stack rather than a house style,
 so keep new work inside it:
@@ -166,4 +327,5 @@ In the explorer, clicking a swatch washes the page via `--page-bg` and sets `htm
 any color. That's why `themeToggle` calls `clearBackground()` before `setTheme()` — otherwise the toggle
 appears to do nothing.
 
-Both stylesheets honour `prefers-reduced-motion: reduce`; new animations should too.
+All three stylesheets honour `prefers-reduced-motion: reduce`, and the Job Portal's hero panel
+checks it in JS as well before starting its timer; new animations should do the same.
