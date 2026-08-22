@@ -1,0 +1,139 @@
+/* ---------------------------------------------------------------------------
+   Shortlist design tokens.
+
+   Direction: an ink-on-paper job board with a single saturated accent. The
+   surface is a warm-neutral slate (not cream, not pure white), the accent is a
+   deep ink blue, and the one bright colour in the system — a signal amber —
+   is reserved exclusively for the fit meter. Nothing else in the UI is allowed
+   to use it, which is what makes the score readable at a glance on a dense page.
+
+   Components read tokens only. Never hard-code a colour in a component rule.
+--------------------------------------------------------------------------- */
+
+:root {
+  /* Surfaces, light */
+  --paper: #f6f5f2;
+  --surface: #ffffff;
+  --surface-2: #faf9f7;
+  --surface-sunk: #efede8;
+  --line: #e2dfd8;
+  --line-strong: #cfcbc1;
+
+  /* Ink */
+  --ink: #16161a;
+  --ink-2: #45454d;
+  --ink-3: #6c6c76;
+  --ink-faint: #93939c;
+
+  /* Accent — deep ink blue */
+  --accent: #1d3f76;
+  --accent-hover: #16325e;
+  --accent-ink: #ffffff;
+  --accent-wash: #eaeff7;
+  --accent-line: #c3d0e5;
+
+  /* Signal amber — fit meter only */
+  --signal: #c8791a;
+  --signal-bright: #eba53f;
+  --signal-wash: #fbf1e2;
+
+  /* Status */
+  --positive: #1c6b4a;
+  --positive-wash: #e6f2ec;
+  --warning: #8a5a10;
+  --warning-wash: #fbf0dd;
+  --danger: #a32b28;
+  --danger-wash: #fbeceb;
+
+  /* Fit bands */
+  --fit-strong: #1c6b4a;
+  --fit-good: #1d3f76;
+  --fit-stretch: #8a5a10;
+  --fit-low: #6c6c76;
+
+  /* Type */
+  --font-display: 'Bricolage Grotesque Variable', 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Instrument Sans Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Type scale — 1.24 ratio off 16px */
+  --t-xs: 0.75rem;
+  --t-sm: 0.8125rem;
+  --t-base: 0.9375rem;
+  --t-md: 1.0625rem;
+  --t-lg: 1.3125rem;
+  --t-xl: 1.625rem;
+  --t-2xl: 2.0625rem;
+  --t-3xl: 2.625rem;
+  --t-4xl: 3.5rem;
+
+  /* Space — 4px base */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+
+  /* Radii — all derive from --radius */
+  --radius: 0.75rem;
+  --r-1: calc(var(--radius) * 0.4);
+  --r-2: calc(var(--radius) * 0.7);
+  --r-3: var(--radius);
+  --r-4: calc(var(--radius) * 1.5);
+  --r-pill: 999px;
+
+  /* Elevation — soft, low-contrast, warm-tinted */
+  --shadow-1: 0 1px 2px rgba(22, 22, 26, 0.05), 0 1px 3px rgba(22, 22, 26, 0.04);
+  --shadow-2: 0 2px 4px rgba(22, 22, 26, 0.05), 0 6px 16px rgba(22, 22, 26, 0.07);
+  --shadow-3: 0 8px 20px rgba(22, 22, 26, 0.1), 0 24px 48px rgba(22, 22, 26, 0.12);
+  --ring: 0 0 0 3px var(--accent-wash), 0 0 0 4.5px var(--accent);
+
+  --header-h: 62px;
+  --page-max: 1240px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+[data-theme='dark'] {
+  --paper: #111114;
+  --surface: #191a1f;
+  --surface-2: #1f2027;
+  --surface-sunk: #0d0d10;
+  --line: #2c2d35;
+  --line-strong: #3d3f49;
+
+  --ink: #f2f1ee;
+  --ink-2: #c3c2c9;
+  --ink-3: #93939e;
+  --ink-faint: #6e6e79;
+
+  --accent: #7ea6e0;
+  --accent-hover: #9dbcec;
+  --accent-ink: #10131a;
+  --accent-wash: #1c2634;
+  --accent-line: #2f4160;
+
+  --signal: #e8a955;
+  --signal-bright: #f5c47d;
+  --signal-wash: #2a2114;
+
+  --positive: #63c39a;
+  --positive-wash: #14251d;
+  --warning: #dba75a;
+  --warning-wash: #2a2114;
+  --danger: #e88a86;
+  --danger-wash: #2c1717;
+
+  --fit-strong: #63c39a;
+  --fit-good: #7ea6e0;
+  --fit-stretch: #dba75a;
+  --fit-low: #93939e;
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.35), 0 6px 16px rgba(0, 0, 0, 0.45);
+  --shadow-3: 0 8px 20px rgba(0, 0, 0, 0.5), 0 24px 48px rgba(0, 0, 0, 0.55);
+  --ring: 0 0 0 3px var(--accent-wash), 0 0 0 4.5px var(--accent);
+}

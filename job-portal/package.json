@@ -1,0 +1,24 @@
+{
+  "name": "job-portal",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 5173"
+  },
+  "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/instrument-sans": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.0",
+    "vite": "^8.2.2"
+  },
+  "description": "Shortlist — a React job portal UI: search, filter, fit-scored listings, and an apply flow."
+}

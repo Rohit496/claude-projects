@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Shortlist is a job portal that scores every opening against your profile, so you apply to four roles instead of forty."
+    />
+    <title>Shortlist — job portal</title>
+    <script>
+      // Resolve the theme before first paint so the page never flashes the wrong one.
+      (function () {
+        try {
+          var saved = localStorage.getItem('jobportal.theme')
+          var theme =
+            saved === 'dark' || saved === 'light'
+              ? saved
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+          document.documentElement.dataset.theme = theme
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light'
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

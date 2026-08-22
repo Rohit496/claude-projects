@@ -11,3 +11,6 @@ color-palette-explorer/data/history.json.tmp
 
 # macOS
 .DS_Store
+
+# Salesforce CLI local org cache
+.sf/

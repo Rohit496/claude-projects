@@ -1,22 +1,45 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Future Me — A Letter to Tomorrow</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Future Me — Private letters to your future self</title>
+  <meta name="description" content="Write a letter, choose the day it opens, and seal it. Future Me keeps it locked in your browser until that date — no account, no server, nothing uploaded." />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Future Me — Private letters to your future self" />
+  <meta property="og:description" content="Seal a letter today. It stays locked in your browser, counting down, until the date you choose — then it opens itself." />
+  <meta name="twitter:card" content="summary" />
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230a0a0a'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%236366f1' stroke-width='2'/%3E%3Cpath d='M16 9.5V16l4.5 2.6' fill='none' stroke='%236366f1' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E" />
+
+  <!-- Set the theme before first paint so the page never flashes the wrong one. -->
+  <script>
+    try {
+      var t = localStorage.getItem("futureme.theme");
+      if (t !== "light" && t !== "dark") {
+        t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      }
+      document.documentElement.dataset.theme = t;
+    } catch (e) { /* storage blocked — the default in the markup stands */ }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <!-- Demo banner: auto-dismisses at a scheduled time, see DEMO_BANNER_EXPIRES_AT in script.js -->
-  <div id="demoBanner" class="demo-banner" role="status">
-    <p>This is a demo UI — for preview purposes only. <span id="demoBannerTime" class="demo-banner-time"></span></p>
-    <button id="demoBannerClose" class="demo-banner-close" type="button" aria-label="Dismiss banner">&times;</button>
-  </div>
 
-  <!-- Ambient background -->
+<body id="top">
+  <a class="skip-link" href="#compose">Skip to the letter form</a>
+
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- Ambient background: drifting washes, plus a starfield in dark mode. -->
   <div class="aurora" aria-hidden="true">
     <span class="blob blob-1"></span>
     <span class="blob blob-2"></span>
@@ -24,113 +47,200 @@
   </div>
   <canvas id="stars" class="stars" aria-hidden="true"></canvas>
 
-  <header class="topbar">
-    <a class="brand" href="#top">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-          <circle cx="12" cy="12" r="9" />
-          <path d="M12 7v5.5l3.5 2" />
-        </svg>
-      </span>
-      <span class="brand-text">Future<em>Me</em></span>
-    </a>
+  <!-- ── Masthead ─────────────────────────────────────────── -->
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <circle cx="12" cy="12" r="8.4" />
+            <path d="M12 6.8V12l3.4 2" />
+          </svg>
+        </span>
+        <span class="brand-name">Future Me</span>
+      </a>
 
-    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle colour theme" title="Toggle theme">
-      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
-        <circle cx="12" cy="12" r="4.2" />
-        <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19" />
-      </svg>
-      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 14.2A8.4 8.4 0 1 1 9.8 4a6.6 6.6 0 0 0 10.2 10.2z" />
-      </svg>
-    </button>
-  </header>
+      <nav class="nav" aria-label="Primary">
+        <a href="#how">How it works</a>
+        <a href="#vault">Your letters</a>
+        <a href="#privacy">Privacy</a>
+      </nav>
 
-  <main id="top">
-    <!-- ── Hero ───────────────────────────────────────────── -->
-    <section class="hero">
-      <p class="eyebrow reveal">A sealed letter across time</p>
-      <h1 class="reveal" style="--d:.08s">
-        Write to the person<br /><em>you're becoming.</em>
-      </h1>
-      <p class="lede reveal" style="--d:.16s">
-        Seal a message today. It stays locked — counting down, quietly — until the
-        date you choose. Then it opens itself.
-      </p>
-
-      <figure class="quote-card reveal" style="--d:.24s">
-        <blockquote id="quoteText">&nbsp;</blockquote>
-        <figcaption id="quoteAuthor"></figcaption>
-        <button id="newQuote" class="quote-refresh" type="button" aria-label="Show another quote">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 11a8 8 0 1 0-.6 4" /><path d="M20 5v6h-6" />
+      <div class="masthead-actions">
+        <a class="btn btn-primary btn-sm nav-cta" href="#compose">Write a letter</a>
+        <button id="themeToggle" class="icon-btn" type="button" aria-label="Switch to light theme" title="Switch theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4.2" />
+            <path d="M12 2.8v2.2M12 19v2.2M2.8 12H5M19 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6" />
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 14.2A8.4 8.4 0 1 1 9.8 4a6.6 6.6 0 0 0 10.2 10.2z" />
           </svg>
         </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ── Hero ───────────────────────────────────────────── -->
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <p class="eyebrow reveal">Time capsule · Private by design</p>
+        <h1>Write to the person
+          <span class="phrase" id="heroPhrase" data-no-split aria-hidden="true"></span>
+          <span class="sr-only" data-no-split>you&rsquo;re becoming.</span>
+        </h1>
+        <p class="lede reveal" style="--d:.16s">
+          Seal a letter today and choose the day it opens. Until then it stays locked
+          in this browser — counting down, unreadable, even to you.
+        </p>
+
+        <div class="hero-actions reveal" style="--d:.24s">
+          <a class="btn btn-primary" href="#compose">Write a letter</a>
+          <a class="btn btn-quiet" href="#how">See how it works</a>
+        </div>
+
+        <ul class="assurances reveal" style="--d:.3s">
+          <li>No account</li>
+          <li>Nothing leaves this device</li>
+          <li>Opens on its own</li>
+        </ul>
+      </div>
+
+      <!-- Signature element: a specimen record, redacted and counting down. -->
+      <figure class="specimen reveal" style="--d:.2s" aria-labelledby="specimenCaption">
+        <figcaption id="specimenCaption" class="specimen-head">
+          <span class="stamp">Specimen</span>
+          <span class="ref">FM-0000-SPEC</span>
+        </figcaption>
+
+        <dl class="record">
+          <div class="record-row"><dt>From</dt><dd>Ada Lovelace</dd></div>
+          <div class="record-row"><dt>Sealed</dt><dd id="specSealed">—</dd></div>
+          <div class="record-row"><dt>Opens</dt><dd id="specOpens">—</dd></div>
+        </dl>
+
+        <div class="redaction" role="img" aria-label="The letter's text, withheld until its release date">
+          <span style="--n:0;width:16%"></span><span style="--n:1;width:27%"></span><span style="--n:2;width:11%"></span>
+          <span style="--n:3;width:34%"></span><span style="--n:4;width:14%"></span><span style="--n:5;width:21%"></span>
+          <span style="--n:6;width:9%"></span><span style="--n:7;width:30%"></span><span style="--n:8;width:18%"></span>
+          <span style="--n:9;width:12%"></span><span style="--n:10;width:25%"></span><span style="--n:11;width:15%"></span>
+        </div>
+
+        <div class="countdown" id="specCountdown" aria-hidden="true">
+          <div class="unit"><b class="reel" data-unit="days"></b><span>days</span></div>
+          <div class="unit"><b class="reel" data-unit="hours"></b><span>hrs</span></div>
+          <div class="unit"><b class="reel" data-unit="mins"></b><span>min</span></div>
+          <div class="unit"><b class="reel" data-unit="secs"></b><span>sec</span></div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress"><div class="progress-bar" id="specBar"></div></div>
+          <div class="progress-meta"><span data-pct>—</span><span data-remain>—</span></div>
+        </div>
       </figure>
     </section>
 
-    <!-- ── Composer ───────────────────────────────────────── -->
-    <section class="panel composer reveal" style="--d:.3s" aria-labelledby="composeTitle">
-      <div class="panel-head">
-        <h2 id="composeTitle">Seal a new capsule</h2>
-        <span class="panel-note">Stored privately in this browser</span>
+    <!-- ── How it works ───────────────────────────────────── -->
+    <section class="band" id="how">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>How a letter travels</h2>
+          <p class="section-note">Three moments. You set the middle one.</p>
+        </div>
+
+        <ol class="timeline">
+          <li class="stage">
+            <span class="tick" aria-hidden="true">01</span>
+            <h3>Write</h3>
+            <p>Say what&rsquo;s true today — the work, the worry, the thing you hope has changed by then.</p>
+            <span class="stage-when">Today</span>
+          </li>
+          <li class="stage">
+            <span class="tick" aria-hidden="true">02</span>
+            <h3>Wait</h3>
+            <p>The letter locks. Your register shows a countdown and how far along the wait is — never the text.</p>
+            <span class="stage-when">Days to years</span>
+          </li>
+          <li class="stage">
+            <span class="tick" aria-hidden="true">03</span>
+            <h3>Open</h3>
+            <p>On the date you chose it unseals itself. If the page is open when the moment lands, it opens in front of you.</p>
+            <span class="stage-when">Release day</span>
+          </li>
+        </ol>
       </div>
-
-      <form id="capsuleForm" novalidate>
-        <div class="grid">
-          <div class="field">
-            <label for="name">Your name</label>
-            <input id="name" name="name" type="text" placeholder="Ada Lovelace" autocomplete="name" maxlength="60" />
-            <small class="error" data-error-for="name"></small>
-          </div>
-
-          <div class="field">
-            <label for="unlockDate">Unlock on</label>
-            <input id="unlockDate" name="unlockDate" type="datetime-local" />
-            <small class="error" data-error-for="unlockDate"></small>
-            <div class="chips" role="group" aria-label="Quick date presets">
-              <button class="chip" type="button" data-preset="7">1 week</button>
-              <button class="chip" type="button" data-preset="30">1 month</button>
-              <button class="chip" type="button" data-preset="180">6 months</button>
-              <button class="chip" type="button" data-preset="365">1 year</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="field">
-          <label for="message">Message to your future self</label>
-          <textarea id="message" name="message" rows="6" maxlength="2000"
-            placeholder="Dear me,&#10;&#10;Right now I'm working on…"></textarea>
-          <div class="field-foot">
-            <small class="error" data-error-for="message"></small>
-            <span class="counter"><span id="charCount">0</span>/2000</span>
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" />
-            </svg>
-            Seal it
-          </button>
-          <button type="reset" class="btn btn-ghost">Clear</button>
-        </div>
-      </form>
     </section>
 
-    <!-- ── Dashboard ──────────────────────────────────────── -->
-    <section class="dashboard" aria-labelledby="vaultTitle">
-      <div class="section-head">
-        <h2 id="vaultTitle">Your vault</h2>
-        <div class="filters" role="tablist" aria-label="Filter capsules">
-          <button class="filter is-active" role="tab" aria-selected="true" data-filter="all">All <span class="pill" data-count="all">0</span></button>
-          <button class="filter" role="tab" aria-selected="false" data-filter="locked">Locked <span class="pill" data-count="locked">0</span></button>
-          <button class="filter" role="tab" aria-selected="false" data-filter="unlocked">Opened <span class="pill" data-count="unlocked">0</span></button>
+    <!-- ── Composer ───────────────────────────────────────── -->
+    <section class="wrap section" id="compose" aria-labelledby="composeTitle">
+      <div class="panel reveal">
+        <div class="panel-head">
+          <h2 id="composeTitle">Write a letter</h2>
+          <span class="panel-note">Saved in this browser only</span>
+        </div>
+
+        <form id="capsuleForm" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="name">From</label>
+              <input id="name" name="name" type="text" placeholder="Ada Lovelace" autocomplete="name" maxlength="60" />
+              <small class="error" data-error-for="name"></small>
+            </div>
+
+            <div class="field">
+              <label for="unlockDate">Opens on</label>
+              <input id="unlockDate" name="unlockDate" type="datetime-local" />
+              <small class="error" data-error-for="unlockDate"></small>
+              <div class="presets" role="group" aria-label="Set the release date">
+                <button class="preset" type="button" data-preset="7">1 week</button>
+                <button class="preset" type="button" data-preset="30">1 month</button>
+                <button class="preset" type="button" data-preset="180">6 months</button>
+                <button class="preset" type="button" data-preset="365">1 year</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="message">Your letter</label>
+            <textarea id="message" name="message" rows="7" maxlength="2000"
+              placeholder="Dear me,&#10;&#10;Right now I'm working on…"></textarea>
+            <div class="field-foot">
+              <small class="error" data-error-for="message"></small>
+              <span class="counter"><span id="charCount">0</span>/2000</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="4.5" y="10.5" width="15" height="9.5" rx="1.5" /><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5" />
+              </svg>
+              Seal letter
+            </button>
+            <button type="reset" class="btn btn-quiet">Clear</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ── Register ───────────────────────────────────────── -->
+    <section class="wrap section" id="vault" aria-labelledby="vaultTitle">
+      <div class="section-head section-head-split">
+        <div>
+          <h2 id="vaultTitle">Your letters</h2>
+          <p class="section-note" id="vaultSummary">Nothing sealed yet</p>
+        </div>
+
+        <div class="filters" role="group" aria-label="Filter letters">
+          <span class="filter-glide" aria-hidden="true"></span>
+          <button class="filter is-active" type="button" aria-pressed="true" data-filter="all">All <span class="pill" data-count="all">0</span></button>
+          <button class="filter" type="button" aria-pressed="false" data-filter="locked">Sealed <span class="pill" data-count="locked">0</span></button>
+          <button class="filter" type="button" aria-pressed="false" data-filter="unlocked">Open <span class="pill" data-count="unlocked">0</span></button>
         </div>
       </div>
 
-      <div id="capsuleList" class="capsule-list"></div>
+      <div id="capsuleList" class="register"></div>
 
       <div id="emptyState" class="empty" hidden>
         <div class="empty-art" aria-hidden="true">
@@ -140,25 +250,104 @@
           </svg>
         </div>
         <h3>Nothing sealed yet</h3>
-        <p>Your first letter to the future is one form away.</p>
+        <p>Write your first letter and it will appear here, counting down.</p>
+        <a class="btn btn-quiet btn-sm" href="#compose">Write a letter</a>
+      </div>
+    </section>
+
+    <!-- ── Privacy ────────────────────────────────────────── -->
+    <section class="band" id="privacy">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Where your letters live</h2>
+          <p class="section-note">The whole storage model, in three sentences.</p>
+        </div>
+
+        <div class="facts">
+          <article class="fact">
+            <h3>On this device</h3>
+            <p>Every letter is written to this browser&rsquo;s local storage under a single key. There is no account, no database, and no sync between devices.</p>
+          </article>
+          <article class="fact">
+            <h3>Nothing is sent</h3>
+            <p>The page loads a stylesheet, a script, and its fonts. Nothing you type is transmitted anywhere — the countdown runs entirely on your own clock.</p>
+          </article>
+          <article class="fact">
+            <h3>Yours to keep or lose</h3>
+            <p>Clearing site data, browsing privately, or switching browsers removes your letters permanently. Treat them the way you would a paper journal.</p>
+          </article>
+        </div>
       </div>
     </section>
   </main>
 
   <footer class="foot">
-    <p>Everything lives in your browser's local storage. Nothing is uploaded.</p>
+    <div class="wrap">
+      <div class="foot-top">
+        <div class="foot-brand-block">
+          <a class="brand" href="#top">
+            <span class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+                <circle cx="12" cy="12" r="8.4" />
+                <path d="M12 6.8V12l3.4 2" />
+              </svg>
+            </span>
+            <span class="brand-name">Future Me</span>
+          </a>
+          <p>Private letters to your future self — written here, sealed here, opened here.</p>
+        </div>
+
+        <nav class="foot-cols" aria-label="Footer">
+          <div class="foot-col">
+            <h2 class="foot-col-title">Explore</h2>
+            <a href="#how">How it works</a>
+            <a href="#compose">Write a letter</a>
+            <a href="#vault">Your letters</a>
+          </div>
+          <div class="foot-col">
+            <h2 class="foot-col-title">About</h2>
+            <a href="#privacy">Privacy</a>
+            <a href="#top">Back to top</a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="foot-bottom">
+        <p>No cookies, no analytics, no server.</p>
+        <p>Everything lives in this browser&rsquo;s local storage.</p>
+      </div>
+    </div>
   </footer>
 
-  <!-- Reveal modal -->
+  <!-- ── Reading modal ──────────────────────────────────── -->
   <div id="modal" class="modal" hidden>
     <div class="modal-backdrop" data-close></div>
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="seal-burst" aria-hidden="true"></div>
-      <p class="modal-eyebrow">A capsule from the past</p>
+      <div class="modal-head">
+        <p class="modal-eyebrow">Released letter</p>
+        <span class="ref" id="modalRef"></span>
+      </div>
       <h3 id="modalTitle">Dear future me</h3>
       <p class="modal-meta" id="modalMeta"></p>
       <div class="modal-body" id="modalBody"></div>
-      <button class="btn btn-primary" type="button" data-close>Close</button>
+      <div class="modal-actions">
+        <button class="btn btn-primary btn-sm" type="button" data-close>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Confirm dialog ─────────────────────────────────── -->
+  <div id="confirm" class="modal modal-sm" hidden>
+    <div class="modal-backdrop" data-cancel></div>
+    <div class="modal-card confirm-card" role="dialog" aria-modal="true"
+         aria-labelledby="confirmTitle" aria-describedby="confirmText">
+      <h3 id="confirmTitle">Delete this letter?</h3>
+      <p class="confirm-text" id="confirmText"></p>
+      <div class="modal-actions">
+        <button class="btn btn-quiet btn-sm" type="button" id="confirmCancel" data-cancel>Keep it</button>
+        <button class="btn btn-danger btn-sm" type="button" id="confirmOk">Delete letter</button>
+      </div>
     </div>
   </div>
 

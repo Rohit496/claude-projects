@@ -1,0 +1,571 @@
+/* Reusable primitives: buttons, fields, chips, badges, logos, meters, dialogs, toasts. */
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: 0.55rem 0.95rem;
+  border-radius: var(--r-2);
+  border: 1px solid transparent;
+  font-size: var(--t-base);
+  font-weight: 550;
+  letter-spacing: -0.006em;
+  white-space: nowrap;
+  transition:
+    background 0.16s var(--ease),
+    color 0.16s var(--ease),
+    border-color 0.16s var(--ease),
+    transform 0.12s var(--ease),
+    box-shadow 0.16s var(--ease);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: var(--shadow-1);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--ink-faint);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink-2);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--surface-sunk);
+  color: var(--ink);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--danger);
+  border-color: var(--line-strong);
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--danger-wash);
+  border-color: var(--danger);
+}
+
+.btn-sm {
+  padding: 0.35rem 0.65rem;
+  font-size: var(--t-sm);
+}
+.btn-lg {
+  padding: 0.75rem 1.35rem;
+  font-size: var(--t-md);
+}
+.btn-block {
+  width: 100%;
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-2);
+  color: var(--ink-2);
+  border: 1px solid transparent;
+  transition: background 0.16s var(--ease), color 0.16s var(--ease), border-color 0.16s var(--ease);
+}
+.icon-btn:hover {
+  background: var(--surface-sunk);
+  color: var(--ink);
+}
+.icon-btn[aria-pressed='true'] {
+  color: var(--accent);
+  background: var(--accent-wash);
+  border-color: var(--accent-line);
+}
+
+/* ---------- Fields ---------- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.field-label {
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.field-hint {
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+}
+.field-error {
+  font-size: var(--t-xs);
+  color: var(--danger);
+  font-weight: 550;
+}
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-2);
+  color: var(--ink);
+  font-size: var(--t-base);
+  transition: border-color 0.16s var(--ease), box-shadow 0.16s var(--ease);
+}
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--ink-faint);
+}
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+.input[aria-invalid='true'],
+.textarea[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+.textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.55;
+}
+.select {
+  appearance: none;
+  padding-right: 2rem;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 0.3rem 0;
+  font-size: var(--t-base);
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.checkbox input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex: none;
+}
+.checkbox:hover {
+  color: var(--ink);
+}
+.checkbox-count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  color: var(--ink-faint);
+}
+
+.range {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+/* ---------- Chips, badges, tags ---------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: var(--t-xs);
+  font-weight: 550;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.chip-accent {
+  background: var(--accent-wash);
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+.chip-positive {
+  background: var(--positive-wash);
+  border-color: transparent;
+  color: var(--positive);
+}
+.chip-warning {
+  background: var(--warning-wash);
+  border-color: transparent;
+  color: var(--warning);
+}
+.chip-mono {
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+}
+
+button.chip {
+  cursor: pointer;
+  transition: background 0.16s var(--ease), border-color 0.16s var(--ease), color 0.16s var(--ease);
+}
+button.chip:hover {
+  border-color: var(--ink-faint);
+  color: var(--ink);
+}
+button.chip[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.chip-dismiss {
+  display: inline-grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: color-mix(in srgb, currentColor 16%, transparent);
+  font-size: 10px;
+  line-height: 1;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* ---------- Company logo ---------- */
+.logo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: var(--r-2);
+  background: var(--brand-wash, var(--surface-sunk));
+  color: var(--brand, var(--ink-2));
+  border: 1px solid color-mix(in srgb, var(--brand, var(--line-strong)) 22%, transparent);
+  font-family: var(--font-display);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  overflow: hidden;
+}
+.logo svg {
+  width: 62%;
+  height: 62%;
+}
+
+/* ---------- Fit meter ----------
+   The signature element: a segmented arc where each of the four scoring parts
+   is a visible slice. Signal amber appears here and nowhere else. */
+.fit {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.fit-dial {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      from 180deg,
+      var(--fit-color) calc(var(--pct) * 1%),
+      var(--surface-sunk) calc(var(--pct) * 1%)
+    );
+  transition: background 0.5s var(--ease);
+}
+.fit-dial::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--surface);
+}
+.fit-value {
+  position: relative;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--fit-color);
+  letter-spacing: -0.04em;
+}
+.fit-label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+.fit-band {
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--fit-color);
+}
+.fit-sub {
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+}
+
+.fit--strong { --fit-color: var(--fit-strong); }
+.fit--good { --fit-color: var(--fit-good); }
+.fit--stretch { --fit-color: var(--fit-stretch); }
+.fit--low { --fit-color: var(--fit-low); }
+
+/* Breakdown bars, used on the job detail panel */
+.fit-parts {
+  display: grid;
+  gap: var(--s-3);
+}
+.fit-part {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr auto;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: var(--t-sm);
+}
+.fit-part-name {
+  color: var(--ink-2);
+  font-weight: 550;
+}
+.fit-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--surface-sunk);
+  overflow: hidden;
+}
+.fit-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--signal), var(--signal-bright));
+  transform-origin: left;
+  animation: fit-grow 0.6s var(--ease) both;
+}
+.fit-points {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.fit-detail {
+  grid-column: 2 / -1;
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+  margin-top: calc(var(--s-1) * -1);
+}
+
+@keyframes fit-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* ---------- Cards & panels ---------- */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-3);
+}
+.panel-pad {
+  padding: var(--s-5);
+}
+
+.divider {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+}
+
+/* ---------- Empty state ---------- */
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-3);
+  padding: var(--s-8) var(--s-5);
+  text-align: center;
+}
+.empty-mark {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-3);
+  background: var(--surface-sunk);
+  color: var(--ink-faint);
+}
+.empty h3 {
+  font-size: var(--t-md);
+}
+.empty p {
+  max-width: 40ch;
+  color: var(--ink-3);
+  font-size: var(--t-sm);
+}
+
+/* ---------- Dialog ----------
+   Native <dialog> would be simpler, but the backdrop and focus behaviour differ
+   enough across browsers that this portal manages both itself. */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: var(--s-4);
+  background: color-mix(in srgb, #0b0b0e 55%, transparent);
+  backdrop-filter: blur(3px);
+  animation: fade-in 0.18s var(--ease);
+}
+.dialog {
+  width: min(100%, 560px);
+  max-height: min(86dvh, 760px);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-4);
+  box-shadow: var(--shadow-3);
+  animation: dialog-in 0.22s var(--ease);
+  overflow: hidden;
+}
+.dialog-wide {
+  width: min(100%, 680px);
+}
+.dialog-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-4);
+  padding: var(--s-5) var(--s-5) var(--s-4);
+  border-bottom: 1px solid var(--line);
+}
+.dialog-head h2 {
+  font-size: var(--t-lg);
+}
+.dialog-head p {
+  margin-top: var(--s-1);
+  font-size: var(--t-sm);
+  color: var(--ink-3);
+}
+.dialog-body {
+  padding: var(--s-5);
+  overflow-y: auto;
+  display: grid;
+  gap: var(--s-4);
+}
+.dialog-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-5);
+  border-top: 1px solid var(--line);
+  background: var(--surface-2);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+}
+
+/* ---------- Toasts ---------- */
+.toast-region {
+  position: fixed;
+  left: 50%;
+  bottom: var(--s-5);
+  transform: translateX(-50%);
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  width: min(calc(100% - 2rem), 420px);
+  pointer-events: none;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 0.7rem 0.75rem 0.7rem 0.95rem;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--r-2);
+  box-shadow: var(--shadow-3);
+  font-size: var(--t-sm);
+  font-weight: 500;
+  pointer-events: auto;
+  animation: toast-in 0.24s var(--ease);
+}
+.toast-success::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--positive);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--positive) 25%, transparent);
+  flex: none;
+}
+.toast-text {
+  flex: 1;
+}
+.toast-close {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-1);
+  color: inherit;
+  opacity: 0.65;
+}
+.toast-close:hover {
+  opacity: 1;
+  background: color-mix(in srgb, currentColor 15%, transparent);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* ---------- Skeleton ---------- */
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-sunk) 25%, var(--surface-2) 37%, var(--surface-sunk) 63%);
+  background-size: 400% 100%;
+  border-radius: var(--r-2);
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
