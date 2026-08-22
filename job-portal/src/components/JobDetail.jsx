@@ -1,12 +1,15 @@
 import { Link } from 'react-router-dom'
 import { useApp } from '../store/AppStore.jsx'
-import { formatSalaryLong, relativeDays, closingLabel, plural, formatDate } from '../lib/format.js'
+import { formatSalary, relativeDays, closingLabel, plural } from '../lib/format.js'
 import { labelFor, WORK_MODES, JOB_TYPES, LEVELS, CATEGORIES } from '../data/taxonomy.js'
 import CompanyLogo from './CompanyLogo.jsx'
 import FitMeter, { FitBreakdown } from './FitMeter.jsx'
 import { BookmarkIcon, CheckIcon, SendIcon, ClockIcon, TrashIcon } from './Icons.jsx'
 
-export default function JobDetail({ job, fit, onApply, onRemovePosting }) {
+export default function JobDetail({ job, fit, onApply, onRemovePosting, asPage = false }) {
+  // On the board this panel previews a job beside the list, so its title is an h2
+  // under the board's own h1. On the job route it is the page, so it is the h1.
+  const Title = asPage ? 'h1' : 'h2'
   const { isSaved, toggleSave, hasApplied } = useApp()
   const saved = isSaved(job.id)
   const applied = hasApplied(job.id)
@@ -20,7 +23,7 @@ export default function JobDetail({ job, fit, onApply, onRemovePosting }) {
         <div className="detail-identity">
           <CompanyLogo company={job.companyProfile} name={job.company} size={54} />
           <div className="detail-identity-body">
-            <h1>{job.title}</h1>
+            <Title className="detail-title">{job.title}</Title>
             <div className="detail-company">
               {job.companyProfile ? (
                 <Link to={`/companies/${job.companyId}`}>{job.company}</Link>
@@ -41,9 +44,14 @@ export default function JobDetail({ job, fit, onApply, onRemovePosting }) {
 
         <div className="detail-actions">
           {applied ? (
-            <button type="button" className="btn btn-primary" disabled>
-              <CheckIcon /> Application sent
-            </button>
+            // Not a disabled button: this is a completed state, not an unavailable
+            // one, and it should lead somewhere useful.
+            <p className="detail-applied">
+              <CheckIcon size={16} />
+              <span>
+                Application sent. <Link to="/applications">Track it</Link>
+              </span>
+            </p>
           ) : (
             <button type="button" className="btn btn-primary" onClick={() => onApply(job)}>
               <SendIcon /> Apply for this role
@@ -66,8 +74,8 @@ export default function JobDetail({ job, fit, onApply, onRemovePosting }) {
 
         <dl className="detail-facts">
           <div className="detail-fact">
-            <span>Salary</span>
-            <strong className="mono">{formatSalaryLong(job.salary)}</strong>
+            <span>Salary, fixed</span>
+            <strong className="mono">{formatSalary(job.salary)}</strong>
           </div>
           <div className="detail-fact">
             <span>Location</span>
@@ -161,7 +169,6 @@ export default function JobDetail({ job, fit, onApply, onRemovePosting }) {
         <p className="muted" style={{ fontSize: 'var(--t-sm)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <ClockIcon size={15} />
           {closingLabel(daysLeft)} · {plural(job.applicants, 'person has', 'people have')} applied
-          {daysLeft > 0 ? ` · closes ${formatDate(job.closesAt)}` : ''}
         </p>
       </footer>
     </div>

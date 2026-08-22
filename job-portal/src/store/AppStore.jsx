@@ -15,7 +15,7 @@ export const DEFAULT_PROFILE = {
   level: 'mid',
   workModes: ['remote', 'hybrid'],
   minSalary: 20,
-  skills: ['React', 'JavaScript', 'TypeScript', 'CSS', 'Accessibility'],
+  skills: ['React', 'TypeScript', 'JavaScript', 'CSS', 'Accessibility', 'Testing', 'GraphQL', 'Design systems', 'Node.js', 'Git'],
   portfolio: '',
   summary: '',
 }
@@ -81,17 +81,17 @@ export function AppProvider({ children }) {
 
   const isSaved = useCallback((jobId) => savedIds.includes(jobId), [savedIds])
 
+  // The toast must fire outside the state updater: React invokes updaters twice
+  // in development to surface impurity, which would announce every save twice.
   const toggleSave = useCallback(
     (job) => {
-      setSavedIds((list) => {
-        const has = list.includes(job.id)
-        pushToast(has ? `Removed ${job.title} from saved` : `Saved ${job.title}`, {
-          tone: has ? 'default' : 'success',
-        })
-        return has ? list.filter((id) => id !== job.id) : [job.id, ...list]
+      const has = savedIds.includes(job.id)
+      setSavedIds(has ? savedIds.filter((id) => id !== job.id) : [job.id, ...savedIds])
+      pushToast(has ? `Removed ${job.title} from saved` : `Saved ${job.title}`, {
+        tone: has ? 'default' : 'success',
       })
     },
-    [pushToast, setSavedIds],
+    [savedIds, pushToast, setSavedIds],
   )
 
   const hasApplied = useCallback(

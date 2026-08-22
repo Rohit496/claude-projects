@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useDocumentTitle } from '../lib/useDocumentTitle.js'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useApp } from '../store/AppStore.jsx'
 import { COMPANY_BY_ID } from '../data/companies.jsx'
@@ -7,13 +7,14 @@ import { sortJobs } from '../lib/filters.js'
 import { plural } from '../lib/format.js'
 import CompanyLogo from '../components/CompanyLogo.jsx'
 import JobCard from '../components/JobCard.jsx'
-import { ArrowLeftIcon, BuildingIcon, CheckIcon } from '../components/Icons.jsx'
+import { ArrowLeftIcon, BuildingIcon } from '../components/Icons.jsx'
 
 export default function CompanyPage() {
   const { companyId } = useParams()
   const navigate = useNavigate()
   const { jobs, profile } = useApp()
   const company = COMPANY_BY_ID.get(companyId)
+  useDocumentTitle(company ? company.name : 'Company not found')
 
   if (!company) {
     return (

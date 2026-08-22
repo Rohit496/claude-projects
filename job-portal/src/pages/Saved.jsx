@@ -1,16 +1,15 @@
-import { useState } from 'react'
+import { useDocumentTitle } from '../lib/useDocumentTitle.js'
 import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../store/AppStore.jsx'
 import { scoreFit } from '../lib/fit.js'
 import { sortJobs } from '../lib/filters.js'
 import JobCard from '../components/JobCard.jsx'
-import ApplyDialog from '../components/ApplyDialog.jsx'
 import { BookmarkIcon } from '../components/Icons.jsx'
 
 export default function Saved() {
+  useDocumentTitle('Saved jobs')
   const { savedJobs, profile, hasApplied } = useApp()
   const navigate = useNavigate()
-  const [applyFor, setApplyFor] = useState(null)
 
   const scored = sortJobs(
     savedJobs.map((job) => ({ job, fit: scoreFit(job, profile) })),
@@ -57,13 +56,6 @@ export default function Saved() {
           ))}
         </div>
       )}
-
-      <ApplyDialog
-        job={applyFor}
-        fit={applyFor ? scoreFit(applyFor, profile) : null}
-        open={Boolean(applyFor)}
-        onClose={() => setApplyFor(null)}
-      />
     </div>
   )
 }

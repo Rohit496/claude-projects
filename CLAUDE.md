@@ -2,18 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Layout: two independent apps
+## Layout: three independent apps
 
-This directory holds two unrelated projects that share no code, no build, and no dependencies:
+This directory holds three unrelated projects that share no code, no build, and no dependencies:
 
-| | Root (`index.html`, `script.js`, `style.css`) | `color-palette-explorer/` |
-|---|---|---|
-| App | **Future Me** — sealed time-capsule letters | **Color Palette Explorer** — 20-color browser |
-| Stack | Vanilla JS, zero deps, no server | Express 5 + static `public/`, no build step |
-| Persistence | `localStorage` only | `data/history.json` on the server |
+| | Root (`index.html`, `script.js`, `style.css`) | `color-palette-explorer/` | `job-portal/` |
+|---|---|---|---|
+| App | **Future Me** — sealed time-capsule letters | **Color Palette Explorer** — 20-color browser | **Shortlist** — job portal with fit scoring |
+| Stack | Vanilla JS, zero deps, no server | Express 5 + static `public/`, no build step | React 19 + Vite, no server |
+| Persistence | `localStorage` only | `data/history.json` on the server | `localStorage` only |
 
-One git repo at the root covering both. No test suite, no linter, no bundler — don't invent
-commands for them.
+One git repo at the root covering all three. No test suite and no linter anywhere — don't invent
+commands for them. Only `job-portal/` has a bundler.
 
 ## Commands
 
@@ -24,8 +24,14 @@ cd color-palette-explorer && npm install && npm start   # http://localhost:3000,
 # Future Me — no build. Open index.html directly, or serve statically:
 python3 -m http.server 8931                              # then http://localhost:8931
 
-# Syntax check after editing (the only "test" available)
+# Job Portal
+cd job-portal && npm install && npm run dev      # http://localhost:5173 (port is pinned)
+
+# Syntax check after editing (the only "test" available for the two vanilla apps)
 node --check script.js
+
+# Job Portal has a real build, which is its type check of last resort
+cd job-portal && npm run build
 ```
 
 ## Future Me (root)
@@ -93,12 +99,52 @@ at write time — the reference code and redaction are computed from `id` at ren
 - API: `GET /api/colors`, `GET /api/history?limit=`, `POST /api/clicks` (body `{hex}`, returns
   `{saved, recent}`). `limit` is clamped to 1–50 by `parseLimit`.
 
-## Theming (both apps, same pattern, separate state)
+## Job Portal (`job-portal/`)
+
+Vite + React 19 + React Router 7. Front end only — **no API and no server**; the port is pinned
+to 5173 in `vite.config.js` because the setup guide tells people to open that URL. Read
+`job-portal/README.md` first; it documents the routes, the scoring weights and the layout.
+
+- **The fit engine** (`src/lib/fit.js`) is the product. Every role scores out of 100 from four
+  weighted parts — skills 45, seniority 20, location 20, pay 15 — and `scoreFit` returns the
+  per-part breakdown alongside the number, because the UI renders that breakdown verbatim.
+  Change a weight in `WEIGHTS` and the detail panel, the profile stats and the hero demo all
+  follow. `LEVELS` in `data/taxonomy.js` is ordered junior → senior and the engine measures
+  distance along it, so keep it ordered if you add a rung.
+- **One store.** `store/AppStore.jsx` holds profile, saved, applications, posted jobs, recent
+  searches and theme, each persisted under a versioned `jobportal.v1.*` key. Side effects must
+  stay **outside** state updaters — React invokes updaters twice in development, and a
+  `pushToast` inside one announces every action twice.
+- **Storage is untrusted input.** `lib/storage.js:readJSON` falls back to defaults unless the
+  stored value both parses *and* matches the fallback's shape; a key holding `"a string"`
+  parses fine and then explodes on `.map()`. Objects are merged over the fallback so a pruned
+  object keeps every key.
+- **Dialogs** go through `components/Dialog.jsx`: it traps Tab, closes on Escape, restores focus
+  to the trigger and sets `inert` on every body child except the dialog and the toast region
+  (inert would silence the toast's `aria-live`). There are no native `alert`/`confirm`/`prompt`
+  calls — use `Dialog` and `ConfirmDialog`.
+- **Job cards** are an overlay pattern: the title button carries an `::after` spanning the whole
+  card, and the save button sits later in the DOM with its own stacking position. Don't nest the
+  save button inside the open button — it would be invalid and unreachable by keyboard.
+- **Company logos** are inline SVG in `data/companies.jsx`, authored on a 24×24 grid and
+  inheriting `currentColor`. Nothing is fetched, so there is no broken-image state; a company
+  with no profile falls back to tinted initials.
+- **Headings:** `JobDetail` takes `asPage` — `h1` on the job route, `h2` in the board's split
+  panel, where the board owns the `h1`. Each route sets its own tab title via
+  `useDocumentTitle`; child effects run before the parent's, so a title map in `App` would
+  overwrite whatever a dynamic route had set.
+- **A city search also returns remote roles** (you can do them from that city). The result count
+  splits the two — drop that note and the extra rows read as a broken filter.
+- Informational text must not use `--ink-faint`; it fails WCAG AA. That token is for
+  placeholders, icons and borders only — use `--ink-3` for text.
+
+## Theming (all three apps, same pattern, separate state)
 
 `[data-theme="dark"|"light"]` on `<html>` selects a block of CSS custom properties; components only ever
-read tokens (`--bg`, `--text`, `--accent`, …). Keys differ: `futureme.theme` vs `cpe.theme`. Both apps
-now set the attribute in an inline `<head>` script before first paint to avoid a theme flash, so
-`initTheme()` in Future Me only reads back what that script already decided and wires the toggle.
+read tokens (`--bg`, `--text`, `--accent`, …). Keys differ: `futureme.theme`, `cpe.theme`,
+`jobportal.theme`. All three set the attribute in an inline `<head>` script before first paint to
+avoid a theme flash, so `initTheme()` in Future Me — and `AppProvider` in the Job Portal — only
+read back what that script already decided and wire the toggle.
 
 Future Me's design language tracks the current mainstream product stack rather than a house style,
 so keep new work inside it:

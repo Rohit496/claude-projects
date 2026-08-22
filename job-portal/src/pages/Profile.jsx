@@ -1,6 +1,7 @@
+import { useDocumentTitle } from '../lib/useDocumentTitle.js'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useApp, DEFAULT_PROFILE } from '../store/AppStore.jsx'
+import { useApp } from '../store/AppStore.jsx'
 import { LEVELS, WORK_MODES } from '../data/taxonomy.js'
 import { scoreFit } from '../lib/fit.js'
 import { sortJobs } from '../lib/filters.js'
@@ -17,6 +18,7 @@ const SUGGESTED = [
 ]
 
 export default function Profile() {
+  useDocumentTitle('Your profile')
   const { profile, updateProfile, jobs, applications, savedIds, resetEverything } = useApp()
   const [skillDraft, setSkillDraft] = useState('')
   const [confirmReset, setConfirmReset] = useState(false)

@@ -142,7 +142,7 @@
 
 /* ---------- Footer ---------- */
 .footer {
-  margin-top: var(--s-9);
+  margin-top: var(--s-7);
   border-top: 1px solid var(--line);
   background: var(--surface-2);
 }
@@ -183,7 +183,7 @@
   gap: var(--s-3);
   justify-content: space-between;
   font-size: var(--t-xs);
-  color: var(--ink-faint);
+  color: var(--ink-3);
 }
 .footer-blurb {
   max-width: 34ch;
@@ -336,7 +336,7 @@
   gap: var(--s-2);
   padding: 0 var(--s-1) var(--s-1);
   font-size: var(--t-xs);
-  color: var(--ink-faint);
+  color: var(--ink-3);
 }
 
 @media (max-width: 980px) {
@@ -547,6 +547,12 @@
   padding-right: var(--s-1);
   display: grid;
   gap: var(--s-5);
+}
+.filter-group {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
 }
 .filter-group h3 {
   font-family: var(--font-body);
@@ -868,4 +874,11 @@
 .list-editor-row {
   display: flex;
   gap: var(--s-2);
+}
+
+.board-count-note {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: var(--t-xs);
+  color: var(--ink-3);
 }

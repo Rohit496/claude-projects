@@ -16,7 +16,8 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
 
-  // A route change should always close the mobile sheet.
+  // A route change closes the mobile sheet. Tapping the link for the page you are
+  // already on does not change the pathname, so the links also close it directly.
   useEffect(() => setMenuOpen(false), [location.pathname])
 
   const counts = { saved: savedIds.length, applications: applications.length }
@@ -27,6 +28,7 @@ export default function Header() {
       <NavLink
         key={link.to}
         to={link.to}
+        onClick={() => setMenuOpen(false)}
         className={({ isActive }) => `nav-link${isActive ? ' is-active' : ''}`}
       >
         {link.label}

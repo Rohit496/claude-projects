@@ -1,7 +1,7 @@
+import { useDocumentTitle } from '../lib/useDocumentTitle.js'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../store/AppStore.jsx'
-import { scoreFit } from '../lib/fit.js'
 import { sortJobs, filterJobs, EMPTY_FILTERS } from '../lib/filters.js'
 import { COMPANIES } from '../data/companies.jsx'
 import { formatCount, plural } from '../lib/format.js'
@@ -13,6 +13,7 @@ import { SearchIcon, PinIcon, ArrowRightIcon, SparkIcon } from '../components/Ic
 const POPULAR = ['React', 'Python', 'Design systems', 'Kubernetes', 'SQL', 'Remote']
 
 export default function Home() {
+  useDocumentTitle(null)
   const { jobs, profile, recentSearches, rememberSearch } = useApp()
   const navigate = useNavigate()
   const [q, setQ] = useState('')
@@ -255,7 +256,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section style={{ paddingBottom: 'var(--s-8)' }}>
+      <section>
         <div className="cta-band">
           <div>
             <p className="eyebrow" style={{ color: 'var(--signal-bright)' }}>

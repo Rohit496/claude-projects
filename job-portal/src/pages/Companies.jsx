@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../lib/useDocumentTitle.js'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useApp } from '../store/AppStore.jsx'
@@ -7,6 +8,7 @@ import CompanyLogo from '../components/CompanyLogo.jsx'
 import { SearchIcon, BuildingIcon } from '../components/Icons.jsx'
 
 export default function Companies() {
+  useDocumentTitle('Companies')
   const { jobs } = useApp()
   const [q, setQ] = useState('')
 

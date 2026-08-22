@@ -27,12 +27,25 @@ export default function Dialog({ open, onClose, title, description, children, fo
     body.style.overflow = 'hidden'
     if (gap > 0) body.style.paddingRight = `${gap}px`
 
+    // Everything behind the dialog goes inert, so the background is unreachable by
+    // keyboard and absent from the accessibility tree. The toast region is exempt:
+    // inert would silence its aria-live announcements.
+    const backdrop = panelRef.current?.closest('.dialog-backdrop')
+    const madeInert = []
+    Array.from(body.children).forEach((child) => {
+      if (child === backdrop || child.classList?.contains('toast-region')) return
+      if (child.hasAttribute('inert')) return
+      child.setAttribute('inert', '')
+      madeInert.push(child)
+    })
+
     // Focus the first meaningful control, not the close button, when there is one.
     const panel = panelRef.current
     const first = panel?.querySelector('[data-autofocus]') || panel?.querySelector(FOCUSABLE)
     first?.focus({ preventScroll: true })
 
     return () => {
+      madeInert.forEach((child) => child.removeAttribute('inert'))
       body.style.overflow = previousOverflow
       body.style.paddingRight = previousPad
       const target = restoreTo.current

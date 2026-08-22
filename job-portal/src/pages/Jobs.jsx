@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../lib/useDocumentTitle.js'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useApp } from '../store/AppStore.jsx'
@@ -34,6 +35,7 @@ function facetCounts(jobs, filters, profile) {
 }
 
 export default function Jobs() {
+  useDocumentTitle('Find jobs')
   const { jobs, profile, rememberSearch, removePostedJob } = useApp()
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
@@ -65,6 +67,20 @@ export default function Jobs() {
   )
   const counts = useMemo(() => facetCounts(jobs, filters, profile), [jobs, filters, profile])
   const activeCount = activeFilterCount(filters)
+
+  // A location search matches that city plus every remote role. Split the two so
+  // the count can explain itself.
+  const locationSplit = useMemo(() => {
+    const needle = filters.location.trim().toLowerCase()
+    if (!needle || needle === 'remote') return { local: 0, remote: 0 }
+    let local = 0
+    let remote = 0
+    results.forEach(({ job }) => {
+      if (job.location.toLowerCase().includes(needle)) local += 1
+      else if (job.workMode === 'remote') remote += 1
+    })
+    return { local, remote }
+  }, [results, filters.location])
 
   // Keep a valid selection as the result set changes.
   const selected = results.find((entry) => entry.job.id === selectedId) || results[0] || null
@@ -99,6 +115,7 @@ export default function Jobs() {
   return (
     <>
       <div className="board">
+        <h1 className="sr-only">Find jobs</h1>
         <aside className="filter-rail" aria-label="Filters">
           <div className="filter-head">
             <h2>Filters</h2>
@@ -145,6 +162,13 @@ export default function Jobs() {
             <p className="board-count">
               <strong>{results.length}</strong> {results.length === 1 ? 'role' : 'roles'}
               {activeCount > 0 ? ` · ${activeCount} ${activeCount === 1 ? 'filter' : 'filters'} on` : ''}
+              {/* A city search also returns remote roles, which are doable from that
+                  city. Say so, or the extra results read as a broken filter. */}
+              {locationSplit.remote > 0 ? (
+                <span className="board-count-note">
+                  {locationSplit.local} in {filters.location.trim()}, {locationSplit.remote} remote
+                </span>
+              ) : null}
             </p>
             <div className="toolbar-controls">
               <button

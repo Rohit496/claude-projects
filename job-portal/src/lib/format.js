@@ -8,11 +8,6 @@ export function formatSalary(salary) {
   return `₹${min || max} LPA`
 }
 
-export function formatSalaryLong(salary) {
-  if (!salary?.min && !salary?.max) return 'Not disclosed'
-  return `${formatSalary(salary)} · fixed, excluding equity`
-}
-
 export function formatCount(n) {
   if (n >= 100000) return `${(n / 100000).toFixed(1).replace(/\.0$/, '')}L`
   if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, '')}k`

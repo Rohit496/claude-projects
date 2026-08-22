@@ -184,7 +184,7 @@
   margin-left: auto;
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  color: var(--ink-faint);
+  color: var(--ink-3);
 }
 
 .range {
@@ -306,7 +306,10 @@ button.chip[aria-pressed='true'] {
   background: var(--surface);
 }
 .fit-value {
+  /* The dial's inner disc is an ::after, which paints after this span; without
+     an explicit z-index the number is hidden underneath it. */
   position: relative;
+  z-index: 1;
   font-family: var(--font-mono);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -350,12 +353,17 @@ button.chip[aria-pressed='true'] {
   font-weight: 550;
 }
 .fit-track {
+  display: block;
   height: 6px;
   border-radius: var(--r-pill);
   background: var(--surface-sunk);
   overflow: hidden;
 }
 .fit-fill {
+  /* Both are spans, so they need an explicit box — an inline element with no
+     content computes to zero width and the bar never appears. */
+  display: block;
+  width: 100%;
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--signal), var(--signal-bright));
@@ -414,8 +422,11 @@ button.chip[aria-pressed='true'] {
   background: var(--surface-sunk);
   color: var(--ink-faint);
 }
-.empty h3 {
+.empty h3,
+.empty-title {
   font-size: var(--t-md);
+  font-weight: 600;
+  letter-spacing: -0.015em;
 }
 .empty p {
   max-width: 40ch;

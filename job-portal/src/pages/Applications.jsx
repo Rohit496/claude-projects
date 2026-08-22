@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../lib/useDocumentTitle.js'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useApp } from '../store/AppStore.jsx'
@@ -8,6 +9,7 @@ import { ConfirmDialog } from '../components/Dialog.jsx'
 import { SendIcon, TrashIcon } from '../components/Icons.jsx'
 
 export default function Applications() {
+  useDocumentTitle('Your applications')
   const { applications, setApplicationStage, withdrawApplication, jobs } = useApp()
   const [stageFilter, setStageFilter] = useState(null)
   const [confirmWithdraw, setConfirmWithdraw] = useState(null)

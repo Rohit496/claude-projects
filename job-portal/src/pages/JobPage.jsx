@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../lib/useDocumentTitle.js'
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useApp } from '../store/AppStore.jsx'
@@ -17,6 +18,7 @@ export default function JobPage() {
   const [confirmTakedown, setConfirmTakedown] = useState(false)
 
   const job = jobs.find((entry) => entry.id === jobId)
+  useDocumentTitle(job ? `${job.title} at ${job.company}` : 'Role not found')
 
   if (!job) {
     return (
@@ -55,6 +57,7 @@ export default function JobPage() {
       <div className="split-content">
         <div className="panel panel-pad job-page">
           <JobDetail
+            asPage
             job={job}
             fit={fit}
             onApply={() => setApplyOpen(true)}
