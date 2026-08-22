@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Color Palette Explorer</title>
+  <meta name="description" content="Explore 20 handpicked colors — HEX, RGB and HSL at a glance." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <script>
+    // Set the theme before first paint so there's no light-mode flash.
+    (function () {
+      var stored = null;
+      try { stored = localStorage.getItem("cpe.theme"); } catch (e) {}
+      var theme = stored || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+</head>
+<body>
+  <div class="page">
+
+    <!-- ── Hero ───────────────────────────────────────── -->
+    <header class="hero">
+      <div class="hero-gradient" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <p class="hero-eyebrow">20 handpicked shades</p>
+        <h1 class="hero-title">Color Palette Explorer</h1>
+        <p class="hero-sub">
+          Browse, search and copy. Click any card to wash the page in that color —
+          the HEX lands on your clipboard.
+        </p>
+      </div>
+    </header>
+
+    <!-- ── Toolbar ────────────────────────────────────── -->
+    <div class="toolbar">
+      <div class="search">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M20 20l-3.5-3.5" />
+        </svg>
+        <input
+          id="search"
+          class="search-input"
+          type="search"
+          placeholder="Search by name or hex…"
+          aria-label="Search colors by name or hex code"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button id="searchClear" class="search-clear" type="button" aria-label="Clear search" hidden>&times;</button>
+      </div>
+
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" />
+          <path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6" />
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 14.2A8.4 8.4 0 1 1 9.8 4a6.6 6.6 0 0 0 10.2 10.2z" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- ── Recently viewed ────────────────────────────── -->
+    <section id="recentSection" class="recent" aria-labelledby="recentHeading" hidden>
+      <h2 id="recentHeading" class="section-heading">Recently Viewed</h2>
+      <div id="recentList" class="recent-list"></div>
+    </section>
+
+    <!-- ── Grid ───────────────────────────────────────── -->
+    <main>
+      <h2 class="section-heading">The Palette <span id="count" class="count"></span></h2>
+      <div id="grid" class="grid" role="list"></div>
+      <p id="empty" class="empty" hidden></p>
+    </main>
+
+    <footer class="footer">
+      <p>Click a swatch to copy · Built with Express</p>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

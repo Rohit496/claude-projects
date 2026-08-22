@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Future Me — A Letter to Tomorrow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Demo banner: auto-dismisses at a scheduled time, see DEMO_BANNER_EXPIRES_AT in script.js -->
+  <div id="demoBanner" class="demo-banner" role="status">
+    <p>This is a demo UI — for preview purposes only. <span id="demoBannerTime" class="demo-banner-time"></span></p>
+    <button id="demoBannerClose" class="demo-banner-close" type="button" aria-label="Dismiss banner">&times;</button>
+  </div>
+
+  <!-- Ambient background -->
+  <div class="aurora" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+  </div>
+  <canvas id="stars" class="stars" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5.5l3.5 2" />
+        </svg>
+      </span>
+      <span class="brand-text">Future<em>Me</em></span>
+    </a>
+
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle colour theme" title="Toggle theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4.2" />
+        <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19" />
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 14.2A8.4 8.4 0 1 1 9.8 4a6.6 6.6 0 0 0 10.2 10.2z" />
+      </svg>
+    </button>
+  </header>
+
+  <main id="top">
+    <!-- ── Hero ───────────────────────────────────────────── -->
+    <section class="hero">
+      <p class="eyebrow reveal">A sealed letter across time</p>
+      <h1 class="reveal" style="--d:.08s">
+        Write to the person<br /><em>you're becoming.</em>
+      </h1>
+      <p class="lede reveal" style="--d:.16s">
+        Seal a message today. It stays locked — counting down, quietly — until the
+        date you choose. Then it opens itself.
+      </p>
+
+      <figure class="quote-card reveal" style="--d:.24s">
+        <blockquote id="quoteText">&nbsp;</blockquote>
+        <figcaption id="quoteAuthor"></figcaption>
+        <button id="newQuote" class="quote-refresh" type="button" aria-label="Show another quote">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 11a8 8 0 1 0-.6 4" /><path d="M20 5v6h-6" />
+          </svg>
+        </button>
+      </figure>
+    </section>
+
+    <!-- ── Composer ───────────────────────────────────────── -->
+    <section class="panel composer reveal" style="--d:.3s" aria-labelledby="composeTitle">
+      <div class="panel-head">
+        <h2 id="composeTitle">Seal a new capsule</h2>
+        <span class="panel-note">Stored privately in this browser</span>
+      </div>
+
+      <form id="capsuleForm" novalidate>
+        <div class="grid">
+          <div class="field">
+            <label for="name">Your name</label>
+            <input id="name" name="name" type="text" placeholder="Ada Lovelace" autocomplete="name" maxlength="60" />
+            <small class="error" data-error-for="name"></small>
+          </div>
+
+          <div class="field">
+            <label for="unlockDate">Unlock on</label>
+            <input id="unlockDate" name="unlockDate" type="datetime-local" />
+            <small class="error" data-error-for="unlockDate"></small>
+            <div class="chips" role="group" aria-label="Quick date presets">
+              <button class="chip" type="button" data-preset="7">1 week</button>
+              <button class="chip" type="button" data-preset="30">1 month</button>
+              <button class="chip" type="button" data-preset="180">6 months</button>
+              <button class="chip" type="button" data-preset="365">1 year</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="message">Message to your future self</label>
+          <textarea id="message" name="message" rows="6" maxlength="2000"
+            placeholder="Dear me,&#10;&#10;Right now I'm working on…"></textarea>
+          <div class="field-foot">
+            <small class="error" data-error-for="message"></small>
+            <span class="counter"><span id="charCount">0</span>/2000</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" />
+            </svg>
+            Seal it
+          </button>
+          <button type="reset" class="btn btn-ghost">Clear</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ── Dashboard ──────────────────────────────────────── -->
+    <section class="dashboard" aria-labelledby="vaultTitle">
+      <div class="section-head">
+        <h2 id="vaultTitle">Your vault</h2>
+        <div class="filters" role="tablist" aria-label="Filter capsules">
+          <button class="filter is-active" role="tab" aria-selected="true" data-filter="all">All <span class="pill" data-count="all">0</span></button>
+          <button class="filter" role="tab" aria-selected="false" data-filter="locked">Locked <span class="pill" data-count="locked">0</span></button>
+          <button class="filter" role="tab" aria-selected="false" data-filter="unlocked">Opened <span class="pill" data-count="unlocked">0</span></button>
+        </div>
+      </div>
+
+      <div id="capsuleList" class="capsule-list"></div>
+
+      <div id="emptyState" class="empty" hidden>
+        <div class="empty-art" aria-hidden="true">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="10" y="24" width="44" height="30" rx="5" />
+            <path d="M20 24v-6a12 12 0 0 1 24 0v6M32 36v7" />
+          </svg>
+        </div>
+        <h3>Nothing sealed yet</h3>
+        <p>Your first letter to the future is one form away.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Everything lives in your browser's local storage. Nothing is uploaded.</p>
+  </footer>
+
+  <!-- Reveal modal -->
+  <div id="modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="seal-burst" aria-hidden="true"></div>
+      <p class="modal-eyebrow">A capsule from the past</p>
+      <h3 id="modalTitle">Dear future me</h3>
+      <p class="modal-meta" id="modalMeta"></p>
+      <div class="modal-body" id="modalBody"></div>
+      <button class="btn btn-primary" type="button" data-close>Close</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

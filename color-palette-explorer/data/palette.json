@@ -1,0 +1,22 @@
+[
+  { "name": "Crimson Ember",   "hex": "#E63946" },
+  { "name": "Coral Flame",     "hex": "#FF6B6B" },
+  { "name": "Sunset Amber",    "hex": "#F4A261" },
+  { "name": "Golden Honey",    "hex": "#FFC857" },
+  { "name": "Citrus Zest",     "hex": "#F2E863" },
+  { "name": "Matcha Mist",     "hex": "#A8D5BA" },
+  { "name": "Fern Green",      "hex": "#52B788" },
+  { "name": "Pine Teal",       "hex": "#0F766E" },
+  { "name": "Teal Lagoon",     "hex": "#2A9D8F" },
+  { "name": "Arctic Cyan",     "hex": "#56CFE1" },
+  { "name": "Sky Drift",       "hex": "#4EA8DE" },
+  { "name": "Ocean Azure",     "hex": "#2563EB" },
+  { "name": "Royal Indigo",    "hex": "#4338CA" },
+  { "name": "Twilight Violet", "hex": "#7C3AED" },
+  { "name": "Lavender Haze",   "hex": "#C4B5FD" },
+  { "name": "Fuchsia Rose",    "hex": "#DB2777" },
+  { "name": "Rose Quartz",     "hex": "#F4A6B8" },
+  { "name": "Terracotta Clay", "hex": "#C8674A" },
+  { "name": "Sandstone",       "hex": "#EDE0D4" },
+  { "name": "Charcoal Slate",  "hex": "#2B2D42" }
+]
