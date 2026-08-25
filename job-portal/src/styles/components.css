@@ -580,3 +580,65 @@ button.chip[aria-pressed='true'] {
     background-position: 0 0;
   }
 }
+
+/* ---------- Tooltip ----------
+   Inverted chip, same ink-on-paper treatment as .toast, so both tokens flip with the
+   theme and the hint never needs a colour of its own. Anchoring sits on .tooltip
+   because the places these are used — footer list items, icon buttons — have no
+   positioning context to borrow. Nothing above clips it: neither .footer nor
+   .footer-inner sets overflow. */
+.tooltip {
+  position: relative;
+  display: inline-flex;
+}
+.tooltip-bubble {
+  position: absolute;
+  left: 50%;
+  z-index: 60;
+  width: max-content;
+  /* Capped against the viewport as well as in rem: the bubble is centred on its
+     trigger, and in the footer's two-column layout the right-hand column sits close
+     enough to the edge that an uncapped bubble would push out a scrollbar. */
+  max-width: min(16rem, calc(100vw - 2.5rem));
+  padding: var(--s-2) var(--s-3);
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--r-2);
+  box-shadow: var(--shadow-2);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+  text-wrap: pretty;
+  pointer-events: none;
+  animation: tooltip-in 0.16s var(--ease);
+}
+.tooltip-top {
+  bottom: calc(100% + var(--s-2));
+}
+.tooltip-bottom {
+  top: calc(100% + var(--s-2));
+}
+.tooltip-bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  background: var(--ink);
+  transform: rotate(45deg);
+}
+.tooltip-top::after {
+  bottom: -3px;
+}
+.tooltip-bottom::after {
+  top: -3px;
+}
+
+@keyframes tooltip-in {
+  from {
+    opacity: 0;
+  }
+}
