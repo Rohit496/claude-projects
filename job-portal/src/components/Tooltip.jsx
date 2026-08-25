@@ -4,6 +4,9 @@ import { cloneElement, useEffect, useId, useLayoutEffect, useRef, useState } fro
 // bubble over every row on the way past. Focus is deliberate, so it opens at once.
 const HOVER_DELAY = 140
 
+// How close to the viewport edge a bubble may sit before it is nudged back in.
+const EDGE_GUTTER = 12
+
 /**
  * Hover/focus hint anchored to a single trigger. The bubble only exists while it is
  * open, which is what lets aria-describedby point at the same words a sighted user
