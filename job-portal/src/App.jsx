@@ -13,6 +13,7 @@ import Companies from './pages/Companies.jsx'
 import CompanyPage from './pages/CompanyPage.jsx'
 import Profile from './pages/Profile.jsx'
 import PostJob from './pages/PostJob.jsx'
+import Privacy from './pages/Privacy.jsx'
 
 function NotFound() {
   useDocumentTitle('Page not found')
@@ -54,6 +55,7 @@ export default function App() {
           <Route path="/companies/:companyId" element={<CompanyPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/post" element={<PostJob />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
