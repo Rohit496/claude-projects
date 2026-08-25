@@ -598,10 +598,12 @@ button.chip[aria-pressed='true'] {
   width: max-content;
   /* Capped against the viewport as well as in rem: the bubble is centred on its
      trigger, and in the footer's two-column layout the right-hand column sits close
-     enough to the edge that an uncapped bubble would push out a scrollbar. */
+     enough to the edge that an uncapped bubble would push out a scrollbar. Width
+     alone is not enough near an edge, so Tooltip measures the bubble and sets
+     --tooltip-shift to slide it back inside. */
   max-width: min(16rem, calc(100vw - 2.5rem));
   padding: var(--s-2) var(--s-3);
-  transform: translateX(-50%);
+  transform: translateX(calc(-50% + var(--tooltip-shift, 0px)));
   background: var(--ink);
   color: var(--paper);
   border-radius: var(--r-2);
@@ -620,10 +622,11 @@ button.chip[aria-pressed='true'] {
 .tooltip-bottom {
   top: calc(100% + var(--s-2));
 }
+/* The arrow stays over the trigger when the bubble slides, so it cancels the shift. */
 .tooltip-bubble::after {
   content: '';
   position: absolute;
-  left: 50%;
+  left: calc(50% - var(--tooltip-shift, 0px));
   width: 8px;
   height: 8px;
   margin-left: -4px;

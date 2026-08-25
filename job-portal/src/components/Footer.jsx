@@ -63,7 +63,12 @@ export default function Footer() {
         </div>
       </div>
       <div className="footer-note">
-        <span>Shortlist — a demonstration portal. The companies and roles are invented.</span>
+        <span className="footer-legal">
+          <span>Shortlist — a demonstration portal. The companies and roles are invented.</span>
+          <Tooltip label="What a demo board does and does not promise.">
+            <Link to="/terms">Terms of Service</Link>
+          </Tooltip>
+        </span>
         <span className="mono">No server · No account · localStorage only</span>
       </div>
     </footer>

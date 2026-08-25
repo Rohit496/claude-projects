@@ -185,6 +185,20 @@
   font-size: var(--t-xs);
   color: var(--ink-3);
 }
+/* The legal links sit in a run of plain text at the same ink, so they are underlined —
+   colour alone would not separate them from the sentence beside them. Size is pinned
+   back to the note row because `.footer a` is written for the larger column links. */
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-2) var(--s-4);
+}
+.footer-legal a {
+  font-size: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 .footer-blurb {
   max-width: 34ch;
   font-size: var(--t-sm);
@@ -235,6 +249,48 @@
   color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* ---------- Legal pages ----------
+   One column of prose, measure-capped so a paragraph stays readable on a wide
+   screen; the panel around it keeps the page from being a bare wall of text. */
+.legal {
+  display: grid;
+  gap: var(--s-5);
+  max-width: 68ch;
+}
+.legal h2 {
+  font-family: var(--font-body);
+  font-size: var(--t-base);
+  font-weight: 650;
+  letter-spacing: 0;
+  margin-bottom: var(--s-3);
+}
+.legal p {
+  color: var(--ink-2);
+  font-size: var(--t-base);
+}
+.legal p + .bullets,
+.legal p + p {
+  margin-top: var(--s-3);
+}
+/* Scoped through .legal so it outranks `.legal p` above — same class count, later
+   in the file is not enough when the other selector also carries an element. */
+.legal .legal-date {
+  color: var(--ink-3);
+  font-size: var(--t-xs);
+}
+.legal-back {
+  margin-top: var(--s-5);
+  font-size: var(--t-sm);
+  color: var(--ink-3);
+}
+.legal-back a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.legal-back a:hover {
+  color: var(--ink);
 }
 
 /* ---------- Home: hero ---------- */
