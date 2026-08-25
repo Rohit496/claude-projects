@@ -36,7 +36,7 @@ npm run preview  # serve that build on :5173
 | `/applications` | Pipeline counts and a stage tracker per application |
 | `/profile` | The five inputs every score is measured against |
 | `/post` | Post a listing, with a live preview scored as candidates will see it |
-| `/terms` | Terms of Service — what a demo board is, and what it does with your data |
+| `/privacy` | What is stored in this browser, what is not collected, and a control to erase it |
 
 24 seed roles across 14 companies, plus anything you post yourself.
 

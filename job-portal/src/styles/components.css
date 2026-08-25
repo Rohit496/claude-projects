@@ -603,7 +603,9 @@ button.chip[aria-pressed='true'] {
      --tooltip-shift to slide it back inside. */
   max-width: min(16rem, calc(100vw - 2.5rem));
   padding: var(--s-2) var(--s-3);
-  transform: translateX(calc(-50% + var(--tooltip-shift, 0px)));
+  /* --tip-shift nudges the bubble back inside the viewport when its trigger sits near
+     an edge; Tooltip.jsx measures it after the bubble mounts. */
+  transform: translateX(calc(-50% + var(--tip-shift, 0px)));
   background: var(--ink);
   color: var(--paper);
   border-radius: var(--r-2);
@@ -629,7 +631,9 @@ button.chip[aria-pressed='true'] {
   left: calc(50% - var(--tooltip-shift, 0px));
   width: 8px;
   height: 8px;
-  margin-left: -4px;
+  /* Slides back the other way by the same amount, so it keeps pointing at the trigger
+     rather than at wherever the bubble ended up. */
+  margin-left: calc(-4px - var(--tip-arrow, 0px));
   background: var(--ink);
   transform: rotate(45deg);
 }

@@ -24,21 +24,27 @@ export default function Tooltip({ label, placement = 'top', children }) {
 
   useEffect(() => () => window.clearTimeout(timer.current), [])
 
-  // A bubble is centred on its trigger, so one sitting near the right edge — the
-  // footer's legal row, once the note wraps — would hang past the viewport and pull
-  // out a horizontal scrollbar. Measure once it is up and slide it back inside; the
-  // arrow takes the opposite shift so it still points at the trigger. Layout effect,
-  // not a plain one: the correction has to land before the browser paints the bubble.
+  // The bubble is centred on its trigger, so a trigger near either edge of the screen
+  // would push it past the viewport and get it clipped — on a phone the footer's own
+  // links sit close enough to do exactly that. Shift the bubble back inside and slide
+  // the arrow the other way, so it still points at the trigger it belongs to.
   useLayoutEffect(() => {
     const node = bubble.current
-    if (!open || !node) return
-    node.style.setProperty('--tooltip-shift', '0px')
-    const box = node.getBoundingClientRect()
-    const past = box.right - (document.documentElement.clientWidth - EDGE_GUTTER)
-    const short = EDGE_GUTTER - box.left
-    const shift = past > 0 ? -past : short > 0 ? short : 0
-    if (shift) node.style.setProperty('--tooltip-shift', `${Math.round(shift)}px`)
-  }, [open, label])
+    if (!node) return
+    node.style.setProperty('--tip-shift', '0px')
+    node.style.setProperty('--tip-arrow', '0px')
+    const rect = node.getBoundingClientRect()
+    const edge = 8
+    const viewport = document.documentElement.clientWidth
+    let shift = 0
+    if (rect.left < edge) shift = edge - rect.left
+    else if (rect.right > viewport - edge) shift = viewport - edge - rect.right
+    if (!shift) return
+    // The arrow stops short of the corner radius rather than sliding off the bubble.
+    const limit = Math.max(0, rect.width / 2 - 14)
+    node.style.setProperty('--tip-shift', `${shift}px`)
+    node.style.setProperty('--tip-arrow', `${Math.min(limit, Math.max(-limit, shift))}px`)
+  }, [open, label, placement])
 
   const show = (withDelay) => {
     window.clearTimeout(timer.current)

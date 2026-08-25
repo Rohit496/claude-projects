@@ -185,19 +185,15 @@
   font-size: var(--t-xs);
   color: var(--ink-3);
 }
-/* The legal links sit in a run of plain text at the same ink, so they are underlined —
-   colour alone would not separate them from the sentence beside them. Size is pinned
-   back to the note row because `.footer a` is written for the larger column links. */
+/* Legal links live in the small print rather than the column grid: .footer a would
+   otherwise size them a step larger than the row they sit in. */
 .footer-legal {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--s-2) var(--s-4);
+  gap: var(--s-4);
 }
 .footer-legal a {
   font-size: inherit;
-  text-decoration: underline;
-  text-underline-offset: 2px;
 }
 .footer-blurb {
   max-width: 34ch;
