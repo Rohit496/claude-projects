@@ -185,6 +185,16 @@
   font-size: var(--t-xs);
   color: var(--ink-3);
 }
+/* Legal links live in the small print rather than the column grid: .footer a would
+   otherwise size them a step larger than the row they sit in. */
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+}
+.footer-legal a {
+  font-size: inherit;
+}
 .footer-blurb {
   max-width: 34ch;
   font-size: var(--t-sm);

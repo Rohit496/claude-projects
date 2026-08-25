@@ -64,6 +64,11 @@ export default function Footer() {
       </div>
       <div className="footer-note">
         <span>Shortlist — a demonstration portal. The companies and roles are invented.</span>
+        <nav className="footer-legal" aria-label="Legal">
+          <Tooltip label="What Shortlist keeps on this device, and how to erase it.">
+            <Link to="/privacy">Privacy Policy</Link>
+          </Tooltip>
+        </nav>
         <span className="mono">No server · No account · localStorage only</span>
       </div>
     </footer>
