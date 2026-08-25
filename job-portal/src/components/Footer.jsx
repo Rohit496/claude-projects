@@ -68,6 +68,9 @@ export default function Footer() {
           <Tooltip label="What Shortlist keeps on this device, and how to erase it.">
             <Link to="/privacy">Privacy Policy</Link>
           </Tooltip>
+          <Tooltip label="What using this demonstration portal means, and what it does not.">
+            <Link to="/terms">Terms of Service</Link>
+          </Tooltip>
         </nav>
         <span className="mono">No server · No account · localStorage only</span>
       </div>
